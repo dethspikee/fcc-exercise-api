@@ -6,7 +6,6 @@ urlpatterns = [
     url(r'^api/exercise/log/?$', Index.as_view()),
     url(r'^api/exercise/new-user/?$', CreateUser.as_view()),
     url(r'^api/exercise/users/?$', ListUsers.as_view()),
-    url(r'^api/$', Index.as_view()),
 ]
 
 
