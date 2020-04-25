@@ -6,8 +6,8 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import UserAPIModel
-from .serializers import UserSerializer
+from .models import UserAPIModel, Exercise
+from .serializers import UserSerializer, ExerciseSerializer
 # Create your views here.
 
 
@@ -62,6 +62,14 @@ class ListUsers(generics.ListAPIView):
     queryset = UserAPIModel.objects.all()
     serializer_class = UserSerializer
 
+class AddExercise(generics.CreateAPIView):
+    queryset = Exercise.objects.all()
+    serializer_class = ExerciseSerializer
+
 class DeleteUser(generics.DestroyAPIView):
     queryset = UserAPIModel.objects.all()
     serializer_class = UserSerializer
+
+class DeleteExercise(generics.DestroyAPIView):
+    queryset = Exercise.objects.all()
+    serializer_class = ExerciseSerializer

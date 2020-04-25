@@ -5,15 +5,15 @@ from .models import UserAPIModel, Exercise
 
 
 class ExerciseSerializer(serializers.ModelSerializer):
-
+    date = serializers.DateField(required=False, format="%a %b %d %Y")
     class Meta:
         model = Exercise
-        fields = ('user', 'description', 'duration')
-
+        fields = ('id', 'user', 'description', 'duration', 'date')
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=20)
     count = serializers.SerializerMethodField()
     logs = ExerciseSerializer(many=True, read_only=True)
+
     class Meta:
         model = UserAPIModel
         fields = ('username', '_id', 'count' ,'logs')
