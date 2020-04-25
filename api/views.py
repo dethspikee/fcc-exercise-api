@@ -61,3 +61,7 @@ class CreateUser(generics.CreateAPIView):
 class ListUsers(generics.ListAPIView):
     queryset = UserAPIModel.objects.all()
     serializer_class = UserSerializer
+
+class DeleteUser(generics.DestroyAPIView):
+    queryset = UserAPIModel.objects.all()
+    serializer_class = UserSerializer
