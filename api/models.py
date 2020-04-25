@@ -11,8 +11,9 @@ class UserAPIModel(models.Model):
 
 
 class Exercise(models.Model):
-    user = models.ForeignKey(UserAPIModel, on_delete=models.CASCADE, related_name='exercises')
+    user = models.ForeignKey(UserAPIModel, on_delete=models.CASCADE, related_name='logs')
     description = models.CharField(max_length=50)
     duration = models.IntegerField(null=False)
+
 
 

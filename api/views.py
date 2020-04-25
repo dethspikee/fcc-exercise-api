@@ -1,6 +1,9 @@
+from django.core.serializers import serialize
+
+
 from django.shortcuts import render
 from django.views import View
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework import generics
 from .models import UserAPIModel
 from .serializers import UserSerializer
@@ -11,7 +14,21 @@ import json
 class Index(View):
 
     def get(self, request):
-        return HttpResponse('hello')
+        try:
+            user_id = request.GET['userId']
+        except:
+            return JsonResponse({
+                'userId': 'Missing value'
+            })
+        user = UserAPIModel.objects.get(_id=user_id)
+        exercises = serialize('json', user.exercises.all())
+        print(exercises[0])
+        return JsonResponse({
+            '_id': user._id,
+            'username': user.username,
+            'count': len(user.exercises.all())
+        })
+        
 
     def post(self, request):
         data = json.loads(request.body.decode('utf-8'))
