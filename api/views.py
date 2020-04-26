@@ -8,7 +8,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import UserAPIModel, Exercise
-from .serializers import UserSerializer, ExerciseSerializer
+from .serializers import UserSerializer, ExerciseSerializer, UserLogSerializer, UserFromSerializer
 # Create your views here.
 
 
@@ -61,15 +61,17 @@ class Index(APIView):
             users = UserAPIModel.objects.filter(_id=params['userId'])
             if 'from' in params:
                 exercises = Exercise.objects.filter(date__gt=f'{params["from"]}-01-01')
-                users = UserAPIModel.objects.prefetch_related(Prefetch('logs', exercises)).filter(_id=params['userId'])
+                users = UserAPIModel.objects.prefetch_related(Prefetch('log', exercises)).filter(_id=params['userId'])
+                serializer_from = UserFromSerializer(users, many=True, context={'from': params['from']})
+                return JsonResponse(serializer_from.data, safe=False)
         else:
             return JsonResponse({
                 'error': 'Missing userId'
             })
 
 
-        serializer = UserSerializer(users, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        serializer_log = UserLogSerializer(users, many=True)
+        return JsonResponse(serializer_log.data, safe=False)
         
 class CreateUser(generics.CreateAPIView):
     queryset = UserAPIModel.objects.all()
