@@ -1,4 +1,5 @@
-
+from datetime import datetime
+from django.db.models import Prefetch
 from django.shortcuts import render
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -33,23 +34,39 @@ from .serializers import UserSerializer, ExerciseSerializer
 class Index(APIView):
 
     def get(self, request):
-        try:
-            user_id = request.GET['userId']
-        except:
+        # try:
+        #     user_id = request.GET['userId']
+        # except:
+        #     return JsonResponse({
+        #         'userId': 'missing userId'
+        #     })
+        # try:
+        #     users = UserAPIModel.objects.filter(_id=user_id)
+        # except ValueError:
+        #     return JsonResponse({
+        #         'userId': 'Provide valid user ID'
+        #     })
+
+        # if not users:
+        #     return JsonResponse({
+        #         'username': 'Not found'
+        #     })
+        
+        params = {}
+
+        for key, value in request.GET.items():
+            params[key] = value
+
+        if 'userId' in params:
+            users = UserAPIModel.objects.filter(_id=params['userId'])
+            if 'from' in params:
+                exercises = Exercise.objects.filter(date__gt=f'{params["from"]}-01-01')
+                users = UserAPIModel.objects.prefetch_related(Prefetch('logs', exercises)).filter(_id=params['userId'])
+        else:
             return JsonResponse({
-                'userId': 'missing userId'
-            })
-        try:
-            users = UserAPIModel.objects.filter(_id=user_id)
-        except ValueError:
-            return JsonResponse({
-                'userId': 'Provide valid user ID'
+                'error': 'Missing userId'
             })
 
-        if not users:
-            return JsonResponse({
-                'username': 'Not found'
-            })
 
         serializer = UserSerializer(users, many=True)
         return JsonResponse(serializer.data, safe=False)

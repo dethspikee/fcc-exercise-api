@@ -16,6 +16,7 @@ class Exercise(models.Model):
     duration = models.IntegerField(null=False)
     date = models.DateField(blank=True, null=True, default=date.today)
 
-
+    def __str__(self):
+        return str(self.date)
 
 
