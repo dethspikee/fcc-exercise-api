@@ -55,5 +55,8 @@ class UserFromSerializer(UserLogSerializer,serializers.ModelSerializer):
         fields = ('_id', 'username', 'logs_from', 'count', 'log')
 
     def get_logs_from(self, obj):
+        """
+        Get a year value passed from a view and create valid date
+        """
         year = int(self.context.get('from'))
         return date(year,1,1).strftime('%b %m %Y')
